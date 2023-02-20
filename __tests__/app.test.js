@@ -34,3 +34,8 @@ describe("GET /api/categories", () => {
       });
   });
 });
+
+describe("GET /api/reviews/:review_id", () => {
+  test("accepts a request parameter and returns correct review when given valid ID", () => {});
+  test("returns 400 status code when invalid id given", () => {});
+});
