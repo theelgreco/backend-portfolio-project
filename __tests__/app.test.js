@@ -7,14 +7,14 @@ const app = require("../app.js");
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
-describe("GET /api", () => {
-  test("GET /api responds with 200 server ok message", () => {
+describe("bad paths", () => {
+  test("status 404 responds with path not found", () => {
     return request(app)
-      .get("/api")
-      .expect(200)
+      .get("/badpath")
+      .expect(404)
       .then((response) => {
         const { msg } = response.body;
-        expect(msg).toBe("server ok");
+        expect(msg).toBe("path not found!");
       });
   });
 });
