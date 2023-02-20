@@ -38,7 +38,7 @@ describe("GET /api/categories", () => {
 describe("GET /api/categories/reviews", () => {
   test("responds with an array of review objects with the correct properties, sorted by date descending", () => {
     return request(app)
-      .get("/api/categories/reviews")
+      .get("/api/reviews")
       .expect(200)
       .then((response) => {
         const { reviews } = response.body;

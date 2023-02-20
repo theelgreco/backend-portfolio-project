@@ -7,7 +7,7 @@ const {
 
 app.get("/api/categories", getCategories);
 
-app.get("/api/categories/reviews", getReviews);
+app.get("/api/reviews", getReviews);
 
 app.all("*", (req, res) => {
   res.status(404).send({ msg: "path not found!" });
