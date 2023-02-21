@@ -48,3 +48,5 @@ exports.selectReviewsById = (id) => {
     }
   });
 };
+
+exports.insertComments = (id, newComment) => {};

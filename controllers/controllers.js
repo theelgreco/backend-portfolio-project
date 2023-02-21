@@ -2,6 +2,7 @@ const {
   selectCategories,
   selectReviews,
   selectReviewsById,
+  insertComments,
 } = require("../models/models.js");
 
 exports.getCategories = (request, response, next) => {
@@ -33,4 +34,8 @@ exports.getReviewsById = (request, response, next) => {
     .catch((error) => {
       next(error);
     });
+};
+
+exports.postComment = (request, response, next) => {
+  insertComments(request.params, request.body);
 };

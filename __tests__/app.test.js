@@ -112,3 +112,52 @@ describe("GET /api/reviews/:review_id", () => {
       });
   });
 });
+
+describe("POST /api/reviews/:review_id/comments", () => {
+  test.only("201: responds with the posted comment object on successful post", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ username: "stel", body: "this game sucks" })
+      .expect(200)
+      .then((response) => {
+        const { newComment } = response.body;
+        expect(newComment).toMatchObject({
+          body: "this game sucks",
+          votes: 0,
+          author: "stel",
+          review_id: 1,
+          created_at: expect.any(String),
+        });
+      });
+  });
+  test("400: responds with error when request format is incorrect", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ wrongProperty1: "wrongValue1", wrongProperty2: "wrongValue2" })
+      .expect(400)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("incorrect data sent");
+      });
+  });
+  test("400: responds with error when given invalid id", () => {
+    return request(app)
+      .post("/api/reviews/wrongIdFormat/comments")
+      .send({ username: "stel", body: "this game sucks" })
+      .expect(400)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("ID must be a number!");
+      });
+  });
+  test("404: responds with error when id does not exist", () => {
+    return request(app)
+      .post("/api/reviews/932/comments")
+      .send({ username: "stel", body: "this game sucks" })
+      .expect(400)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("There is no user with that id");
+      });
+  });
+});
