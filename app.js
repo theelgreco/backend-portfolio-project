@@ -11,6 +11,8 @@ const {
 
 app.get("/api/categories", getCategories);
 
+app.get("/api/reviews", getReviews);
+
 app.get("/api/reviews/:review_id", getReviewsById);
 
 app.all("*", (req, res) => {
@@ -18,5 +20,6 @@ app.all("*", (req, res) => {
 });
 
 app.use(handleCustomErrors);
+app.use(handle500errors);
 
 module.exports = app;
