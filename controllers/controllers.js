@@ -38,7 +38,6 @@ exports.getReviewsById = (request, response, next) => {
     });
 };
 
-
 exports.getCommentsByReviewId = (request, response, next) => {
   const { review_id } = request.params;
 
@@ -56,8 +55,17 @@ exports.getCommentsByReviewId = (request, response, next) => {
 };
 
 exports.postComment = (request, response, next) => {
-    const { review_id } = request.params;
-    
-    insertComments(review_id, request.body).then((newComment) => {
+  const { review_id } = request.params;
+
+  const reviewsPromise = selectReviewsById(review_id);
+  const commentsPromise = insertComments(review_id, request.body);
+
+  Promise.all([reviewsPromise, commentsPromise])
+    .then((result) => {
+      const newComment = result[1];
       response.status(201).send({ newComment });
-    })};
+    })
+    .catch((error) => {
+      next(error);
+    });
+};

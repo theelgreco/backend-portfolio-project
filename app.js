@@ -9,6 +9,7 @@ const {
 } = require("./controllers/controllers.js");
 const {
   handleCustomErrors,
+  handlePSQLerrors,
   handle500errors,
 } = require("./controllers/error-handling-controllers");
 app.use(express.json());
@@ -28,6 +29,7 @@ app.all("*", (req, res) => {
 });
 
 app.use(handleCustomErrors);
+app.use(handlePSQLerrors);
 app.use(handle500errors);
 
 module.exports = app;

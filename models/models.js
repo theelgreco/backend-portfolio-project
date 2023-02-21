@@ -65,6 +65,11 @@ exports.selectComments = (review_id) => {
 
 exports.insertComments = (id, newComment) => {
   const { username, body } = newComment;
+
+  if (Object.keys(newComment).length === 0) {
+    return Promise.reject("No data has been sent");
+  }
+
   let valuesToInsert = [body, username, id];
   let queryString = `
           INSERT INTO comments
