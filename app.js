@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const {
   getCategories,
+  getReviews,
   getReviewsById,
 } = require("./controllers/controllers.js");
 const {
