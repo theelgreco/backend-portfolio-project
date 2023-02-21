@@ -48,3 +48,16 @@ exports.selectReviewsById = (id) => {
     }
   });
 };
+
+exports.selectComments = (review_id) => {
+  return db
+    .query(
+      `
+    SELECT * FROM comments
+    WHERE review_id = ${review_id}
+    `
+    )
+    .then((result) => {
+      return result.rows;
+    });
+};
