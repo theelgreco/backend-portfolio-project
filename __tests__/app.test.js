@@ -99,7 +99,7 @@ describe("GET /api/reviews/:review_id", () => {
       .expect(404)
       .then((response) => {
         const { msg } = response.body;
-        expect(msg).toBe("There is no user with that id");
+        expect(msg).toBe("There is no review with that id");
       });
   });
   test("400: returns 400 when given anything other than a number", () => {
@@ -140,8 +140,9 @@ describe("GET /api/reviews/:review_id/comments", () => {
       .expect(200)
       .then((response) => {
         const { comments } = response.body;
-        expect(response.body).toHaveProperty("comments");
+        expect(Array.isArray(comments)).toBe(true);
         expect(comments.length).toBe(0);
+        expect(response.body).toHaveProperty("comments");
       });
   });
   test("404: returns an error when given review_id that does not exist", () => {
@@ -150,10 +151,10 @@ describe("GET /api/reviews/:review_id/comments", () => {
       .expect(404)
       .then((response) => {
         const { msg } = response.body;
-        expect(msg).toBe("There is no user with that id");
+        expect(msg).toBe("There is no review with that id");
       });
   });
-  test("400: returns an error when review_id is not in the correct format", () => {
+  test("400: returns 400 when review_id is anything other than a number", () => {
     return request(app)
       .get("/api/reviews/doughnuts/comments")
       .expect(400)
