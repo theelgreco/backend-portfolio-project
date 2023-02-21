@@ -11,11 +11,11 @@ exports.selectReviews = () => {
   return db
     .query(
       `SELECT reviews.*, COUNT(comments.review_id) AS comment_count
-       FROM reviews
-       LEFT JOIN comments
-       ON reviews.review_id = comments.review_id
-       GROUP BY reviews.review_id
-       ORDER BY created_at DESC`
+         FROM reviews
+         LEFT JOIN comments
+         ON reviews.review_id = comments.review_id
+         GROUP BY reviews.review_id
+         ORDER BY created_at DESC`
     )
     .then((result) => {
       const reviews = result.rows;
@@ -26,4 +26,25 @@ exports.selectReviews = () => {
 
       return reviews;
     });
+};
+
+exports.selectReviewsById = (id) => {
+  let queryString = `SELECT * FROM reviews
+    WHERE review_id = $1`;
+  const queryParams = [];
+
+  if (Number(id)) {
+    queryParams.push(id);
+  } else {
+    return Promise.reject("id is not a number");
+  }
+
+  return db.query(queryString, queryParams).then((result) => {
+    if (result.rowCount === 0) {
+      return Promise.reject("invalid review_id");
+    } else {
+      const review = result.rows[0];
+      return review;
+    }
+  });
 };

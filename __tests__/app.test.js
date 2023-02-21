@@ -72,3 +72,43 @@ describe("GET /api/reviews", () => {
       });
   });
 });
+
+describe("GET /api/reviews/:review_id", () => {
+  test("accepts a request parameter and returns correct review object when given valid ID", () => {
+    return request(app)
+      .get("/api/reviews/5")
+      .expect(200)
+      .then((response) => {
+        const { review } = response.body;
+        expect(review).toMatchObject({
+          review_id: 5,
+          title: expect.any(String),
+          review_body: expect.any(String),
+          designer: expect.any(String),
+          review_img_url: expect.any(String),
+          votes: expect.any(Number),
+          category: expect.any(String),
+          owner: expect.any(String),
+          created_at: expect.any(String),
+        });
+      });
+  });
+  test("returns 404 status with custom message when invalid id given", () => {
+    return request(app)
+      .get("/api/reviews/1000")
+      .expect(404)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("There is no user with that id");
+      });
+  });
+  test("returns 400 when given anything other than a number", () => {
+    return request(app)
+      .get("/api/reviews/pizza")
+      .expect(400)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("ID must be a number!");
+      });
+  });
+});
