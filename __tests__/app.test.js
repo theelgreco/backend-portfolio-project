@@ -74,7 +74,7 @@ describe("GET /api/reviews", () => {
 });
 
 describe("GET /api/reviews/:review_id", () => {
-  test.only("accepts a request parameter and returns correct review object when given valid ID", () => {
+  test("accepts a request parameter and returns correct review object when given valid ID", () => {
     return request(app)
       .get("/api/reviews/5")
       .expect(200)
@@ -93,7 +93,7 @@ describe("GET /api/reviews/:review_id", () => {
         });
       });
   });
-  test.only("returns 404 status with custom message when invalid id given", () => {
+  test("returns 404 status with custom message when invalid id given", () => {
     return request(app)
       .get("/api/reviews/1000")
       .expect(404)
@@ -102,7 +102,7 @@ describe("GET /api/reviews/:review_id", () => {
         expect(msg).toBe("There is no user with that id");
       });
   });
-  test.only("returns 400 when given anything other than a number", () => {
+  test("returns 400 when given anything other than a number", () => {
     return request(app)
       .get("/api/reviews/pizza")
       .expect(400)
