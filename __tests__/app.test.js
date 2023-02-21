@@ -121,6 +121,7 @@ describe("GET /api/reviews/:review_id/comments", () => {
       .then((response) => {
         const { comments } = response.body;
         expect(comments.length).toBe(3);
+        expect(comments).toBeSortedBy("created_at", { descending: true });
         comments.forEach((comment) => {
           expect(comment).toMatchObject({
             comment_id: expect.any(Number),

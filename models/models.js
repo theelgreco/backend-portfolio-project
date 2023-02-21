@@ -55,6 +55,7 @@ exports.selectComments = (review_id) => {
       `
     SELECT * FROM comments
     WHERE review_id = ${review_id}
+    ORDER BY created_at DESC
     `
     )
     .then((result) => {
