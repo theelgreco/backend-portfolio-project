@@ -117,16 +117,18 @@ describe("POST /api/reviews/:review_id/comments", () => {
   test.only("201: responds with the posted comment object on successful post", () => {
     return request(app)
       .post("/api/reviews/1/comments")
-      .send({ username: "stel", body: "this game sucks" })
-      .expect(200)
+      .send({ username: "dav3rid", body: "this game sucks" })
+      .expect(201)
       .then((response) => {
         const { newComment } = response.body;
-        expect(newComment).toMatchObject({
+        expect(newComment.length).toBe(1);
+        expect(newComment[0]).toMatchObject({
           body: "this game sucks",
           votes: 0,
-          author: "stel",
+          author: "dav3rid",
           review_id: 1,
           created_at: expect.any(String),
+          comment_id: expect.any(Number),
         });
       });
   });

@@ -49,4 +49,17 @@ exports.selectReviewsById = (id) => {
   });
 };
 
-exports.insertComments = (id, newComment) => {};
+exports.insertComments = (id, newComment) => {
+  const { username, body } = newComment;
+  let valuesToInsert = [body, username, id];
+  let queryString = `
+        INSERT INTO comments
+        (body, author, review_id)
+        VALUES ($1, $2, $3)
+        RETURNING *
+        `;
+
+  return db.query(queryString, valuesToInsert).then((result) => {
+    return result.rows;
+  });
+};

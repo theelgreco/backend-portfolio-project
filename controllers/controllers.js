@@ -27,6 +27,7 @@ exports.getReviews = (request, response, next) => {
 
 exports.getReviewsById = (request, response, next) => {
   const { review_id } = request.params;
+
   selectReviewsById(review_id)
     .then((review) => {
       response.status(200).send({ review });
@@ -37,5 +38,9 @@ exports.getReviewsById = (request, response, next) => {
 };
 
 exports.postComment = (request, response, next) => {
-  insertComments(request.params, request.body);
+  const { review_id } = request.params;
+  
+  insertComments(review_id, request.body).then((newComment) => {
+    response.status(201).send({ newComment });
+  });
 };
