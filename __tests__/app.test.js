@@ -36,16 +36,15 @@ describe("GET /api/categories", () => {
 });
 
 describe("GET /api/categories/reviews", () => {
-  test("responds with an array of review objects with the correct properties, sorted by date descending", () => {
+  test("responds with an array of review objects with the correct properties", () => {
     return request(app)
       .get("/api/reviews")
       .expect(200)
       .then((response) => {
         const { reviews } = response.body;
+
         expect(reviews.length).toBe(13);
-        expect(reviews).toBeSortedBy("created_at", {
-          descending: true,
-        });
+
         reviews.forEach((review) => {
           expect(review).toMatchObject({
             owner: expect.any(String),
@@ -58,6 +57,17 @@ describe("GET /api/categories/reviews", () => {
             designer: expect.any(String),
             comment_count: expect.any(Number),
           });
+        });
+      });
+  });
+  test("returned data is sorted by date descending", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then((response) => {
+        const { reviews } = response.body;
+        expect(reviews).toBeSortedBy("created_at", {
+          descending: true,
         });
       });
   });

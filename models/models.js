@@ -10,30 +10,20 @@ exports.selectCategories = () => {
 exports.selectReviews = () => {
   return db
     .query(
-      `SELECT * FROM reviews 
-    ORDER BY created_at DESC`
+      `SELECT reviews.*, COUNT(comments.review_id) AS comment_count
+       FROM reviews
+       LEFT JOIN comments
+       ON reviews.review_id = comments.review_id
+       GROUP BY reviews.review_id
+       ORDER BY created_at DESC`
     )
     .then((result) => {
       const reviews = result.rows;
-      return reviews;
-    })
-    .then((result) => {
-      const comments = db.query(`SELECT review_id FROM comments`);
-      return Promise.all([result, comments]);
-    })
-    .then((result) => {
-      const reviews = result[0];
-      const comments = result[1].rows;
-      reviews.forEach((review) => {
-        return (review.comment_count = 0);
+      //converted comment count to number as it was being returned as a string
+      reviews.map((review) => {
+        return (review.comment_count = Number(review.comment_count));
       });
-      comments.forEach((comment) => {
-        reviews.forEach((review) => {
-          if (review.review_id === comment.review_id) {
-            review.comment_count++;
-          }
-        });
-      });
+
       return reviews;
     });
 };
