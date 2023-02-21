@@ -74,7 +74,7 @@ describe("GET /api/reviews", () => {
 });
 
 describe("GET /api/reviews/:review_id", () => {
-  test("accepts a request parameter and returns correct review object when given valid ID", () => {
+  test("200: accepts a request parameter and returns correct review object when given valid ID", () => {
     return request(app)
       .get("/api/reviews/5")
       .expect(200)
@@ -93,18 +93,70 @@ describe("GET /api/reviews/:review_id", () => {
         });
       });
   });
-  test("returns 404 status with custom message when invalid id given", () => {
+  test("404: returns 404 status with custom message when invalid id given", () => {
     return request(app)
       .get("/api/reviews/1000")
       .expect(404)
       .then((response) => {
         const { msg } = response.body;
-        expect(msg).toBe("There is no user with that id");
+        expect(msg).toBe("There is no review with that id");
       });
   });
-  test("returns 400 when given anything other than a number", () => {
+  test("400: returns 400 when given anything other than a number", () => {
     return request(app)
       .get("/api/reviews/pizza")
+      .expect(400)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("ID must be a number!");
+      });
+  });
+});
+
+describe("GET /api/reviews/:review_id/comments", () => {
+  test("200: returns array of comments associated with valid specified review_id", () => {
+    return request(app)
+      .get("/api/reviews/2/comments")
+      .expect(200)
+      .then((response) => {
+        const { comments } = response.body;
+        expect(comments.length).toBe(3);
+        expect(comments).toBeSortedBy("created_at", { descending: true });
+        comments.forEach((comment) => {
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            review_id: 2,
+          });
+        });
+      });
+  });
+  test("200: returns empty array when given a review_id that exists but has no associated comments", () => {
+    return request(app)
+      .get("/api/reviews/1/comments")
+      .expect(200)
+      .then((response) => {
+        const { comments } = response.body;
+        expect(Array.isArray(comments)).toBe(true);
+        expect(comments.length).toBe(0);
+        expect(response.body).toHaveProperty("comments");
+      });
+  });
+  test("404: returns an error when given review_id that does not exist", () => {
+    return request(app)
+      .get("/api/reviews/150/comments")
+      .expect(404)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("There is no review with that id");
+      });
+  });
+  test("400: returns 400 when review_id is anything other than a number", () => {
+    return request(app)
+      .get("/api/reviews/doughnuts/comments")
       .expect(400)
       .then((response) => {
         const { msg } = response.body;

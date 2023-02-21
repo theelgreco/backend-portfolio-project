@@ -1,6 +1,6 @@
 exports.handleCustomErrors = (error, request, response, next) => {
   if (error === "invalid review_id") {
-    response.status(404).send({ msg: "There is no user with that id" });
+    response.status(404).send({ msg: "There is no review with that id" });
   } else if (error === "id is not a number") {
     response.status(400).send({ msg: "ID must be a number!" });
   } else {
