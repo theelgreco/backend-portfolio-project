@@ -79,6 +79,6 @@ exports.insertComments = (id, newComment) => {
           `;
 
   return db.query(queryString, valuesToInsert).then((result) => {
-    return result.rows;
+    return result.rows[0];
   });
 };

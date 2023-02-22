@@ -173,8 +173,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
       .expect(201)
       .then((response) => {
         const { newComment } = response.body;
-        expect(newComment.length).toBe(1);
-        expect(newComment[0]).toMatchObject({
+        expect(newComment).toMatchObject({
           body: "this game sucks",
           votes: 0,
           author: "dav3rid",
