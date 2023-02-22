@@ -226,7 +226,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
 });
 
 describe("PATCH /api/reviews/:review_id", () => {
-  test("200: responds with updated review object with the correctly updated votes property", () => {
+  test("200: responds with updated review object with the correctly incremented votes property", () => {
     return request(app)
       .patch("/api/reviews/1")
       .send({ inc_votes: 1 })
@@ -240,6 +240,27 @@ describe("PATCH /api/reviews/:review_id", () => {
           designer: expect.any(String),
           review_img_url: expect.any(String),
           votes: 2,
+          category: expect.any(String),
+          owner: expect.any(String),
+          created_at: expect.any(String),
+        });
+      });
+  });
+  test("200: responds with updated review object with the correctly decremented votes property", () => {
+    return request(app)
+      .patch("/api/reviews/5")
+      .send({ inc_votes: -5 })
+      .expect(200)
+      .then((response) => {
+        const { updatedReview } = response.body;
+        console.log(updatedReview);
+        expect(updatedReview).toMatchObject({
+          review_id: 5,
+          title: expect.any(String),
+          review_body: expect.any(String),
+          designer: expect.any(String),
+          review_img_url: expect.any(String),
+          votes: 0,
           category: expect.any(String),
           owner: expect.any(String),
           created_at: expect.any(String),
