@@ -84,31 +84,32 @@ exports.insertComments = (id, newComment) => {
 };
 
 exports.updateReview = (id, voteAmount) => {
+  let queryParams = [];
   let queryString = `
         UPDATE reviews
-        SET votes = votes + ${voteAmount}
-        WHERE review_id = ${id}
+        SET votes = votes + $2
+        WHERE review_id = $1
         RETURNING *
     `;
 
-  if (voteAmount && !Number(voteAmount)) {
-    return Promise.reject("incorrect data type");
-  }
+  //   if (voteAmount && !Number(voteAmount)) {
+  //     return Promise.reject("incorrect data type");
+  //   }
 
   if (id && !voteAmount) {
+    queryParams.push(id);
     return db
-      .query(
-        `
-        SELECT * FROM reviews
-        WHERE review_id = ${id}
-    `
-      )
+      .query(`SELECT * FROM reviews WHERE review_id = $1`, queryParams)
       .then((result) => {
         return result.rows[0];
       });
   }
 
-  return db.query(queryString).then((result) => {
+  if (id && voteAmount) {
+    queryParams.push(id, voteAmount);
+  }
+
+  return db.query(queryString, queryParams).then((result) => {
     return result.rows[0];
   });
 };

@@ -232,8 +232,8 @@ describe("PATCH /api/reviews/:review_id", () => {
       .send({ inc_votes: 1 })
       .expect(200)
       .then((response) => {
-        const { updatedReview } = response.body;
-        expect(updatedReview).toMatchObject({
+        const { review } = response.body;
+        expect(review).toMatchObject({
           review_id: 1,
           title: expect.any(String),
           review_body: expect.any(String),
@@ -252,8 +252,8 @@ describe("PATCH /api/reviews/:review_id", () => {
       .send({ inc_votes: -5 })
       .expect(200)
       .then((response) => {
-        const { updatedReview } = response.body;
-        expect(updatedReview).toMatchObject({
+        const { review } = response.body;
+        expect(review).toMatchObject({
           review_id: 5,
           title: expect.any(String),
           review_body: expect.any(String),
@@ -272,8 +272,8 @@ describe("PATCH /api/reviews/:review_id", () => {
       .send({})
       .expect(200)
       .then((response) => {
-        const { updatedReview } = response.body;
-        expect(updatedReview).toMatchObject({
+        const { review } = response.body;
+        expect(review).toMatchObject({
           review_id: 3,
           title: expect.any(String),
           review_body: expect.any(String),
@@ -293,7 +293,7 @@ describe("PATCH /api/reviews/:review_id", () => {
       .expect(400)
       .then((response) => {
         const { msg } = response.body;
-        expect(msg).toBe("votes must be a number!");
+        expect(msg).toBe("invalid data type sent");
       });
   });
   test("404: responds with error when given review_id that does not exist", () => {

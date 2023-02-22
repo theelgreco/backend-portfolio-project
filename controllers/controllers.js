@@ -80,10 +80,11 @@ exports.patchReview = (request, response, next) => {
 
   Promise.all([selectReviewsPromise, updateReviewPromise])
     .then((result) => {
-      const updatedReview = result[1];
-      response.status(200).send({ updatedReview });
+      const review = result[1];
+      response.status(200).send({ review });
     })
     .catch((error) => {
+      console.log(error);
       next(error);
     });
 };
