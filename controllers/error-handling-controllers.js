@@ -5,6 +5,8 @@ exports.handleCustomErrors = (error, request, response, next) => {
     response.status(400).send({ msg: "ID must be a number!" });
   } else if (error === "No data has been sent") {
     response.status(400).send({ msg: "no data was sent!" });
+  } else if (error === "incorrect data type") {
+    response.status(400).send({ msg: "votes must be a number!" });
   } else {
     next(error);
   }
@@ -13,6 +15,8 @@ exports.handleCustomErrors = (error, request, response, next) => {
 exports.handlePSQLerrors = (error, request, response, next) => {
   if (error.code === "23502") {
     response.status(400).send({ msg: "incorrect data sent!" });
+  } else if (error.code === "22P02") {
+    response.status(400).send({ msg: "invalid data type sent" });
   } else {
     next(error);
   }
