@@ -253,7 +253,6 @@ describe("PATCH /api/reviews/:review_id", () => {
       .expect(200)
       .then((response) => {
         const { updatedReview } = response.body;
-        console.log(updatedReview);
         expect(updatedReview).toMatchObject({
           review_id: 5,
           title: expect.any(String),
