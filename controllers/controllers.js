@@ -73,10 +73,15 @@ exports.postComment = (request, response, next) => {
 };
 
 exports.getUsers = (request, response, next) => {
-  selectUsers().then((result) => {
-    response.status(200).send(result);
-  });
-}
+  selectUsers()
+    .then((result) => {
+      const users = { users: result };
+      response.status(200).send(users);
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
 
 exports.patchReview = (request, response, next) => {
   const { review_id } = request.params;
