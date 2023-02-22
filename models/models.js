@@ -7,7 +7,18 @@ exports.selectCategories = () => {
   });
 };
 
-exports.selectReviews = () => {
+exports.selectReviews = (category, sort_by, order) => {
+  let queryString = `
+    SELECT reviews.*, COUNT(comments.review_id) AS comment_count
+    FROM reviews
+    LEFT JOIN comments
+    ON reviews.review_id = comments.review_id
+    GROUP BY reviews.review_id
+    ORDER BY created_at DESC
+    `;
+
+  let queryParams = [];
+
   return db
     .query(
       `SELECT reviews.*, COUNT(comments.review_id) AS comment_count

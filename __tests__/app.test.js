@@ -224,3 +224,37 @@ describe("POST /api/reviews/:review_id/comments", () => {
       });
   });
 });
+
+xdescribe("GET /api/reviews (queries)", () => {
+  test("200: only responds with comments from the category specified in query", () => {
+    return request(app)
+      .get("/api/reviews?social_deduction")
+      .expect(200)
+      .then((response) => {
+        const reviews = response.body;
+        reviews.forEach((review) => {
+          expect(review).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            review_id: expect.any(Number),
+            category: "social_deduction",
+            review_img_url: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            designer: expect.any(String),
+            comment_count: expect.any(Number),
+          });
+        });
+      });
+  });
+  test("200: responds with comments sorted by the column specified in query");
+  test("200: responds with comments in order specified in query");
+  test(
+    "200: accepts a mixture of all three queries and responds with the data sorted correctly"
+  );
+  test(
+    "404: responds with error when given a category that exists but does not exist in the reviews"
+  );
+  test("400: responds with error when given invalid category");
+  test("400: responds with error when given invalid sort by option");
+});
