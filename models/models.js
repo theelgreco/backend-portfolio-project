@@ -82,3 +82,5 @@ exports.insertComments = (id, newComment) => {
     return result.rows[0];
   });
 };
+
+exports.selectUsers = () => {};
