@@ -203,7 +203,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
         expect(msg).toBe("no data was sent!");
       });
   });
-  test("400: returns 400 when review_id is anything other than a number", () => {
+  test("400: responds with error when review_id is anything other than a number", () => {
     return request(app)
       .post("/api/reviews/wrongIdFormat/comments")
       .send({ username: "stel", body: "this game sucks" })
@@ -213,7 +213,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
         expect(msg).toBe("ID must be a number!");
       });
   });
-  test("404: returns an error when given review_id that does not exist", () => {
+  test("404: responds with error when given review_id that does not exist", () => {
     return request(app)
       .post("/api/reviews/932/comments")
       .send({ username: "stel", body: "this game sucks" })
@@ -221,6 +221,77 @@ describe("POST /api/reviews/:review_id/comments", () => {
       .then((response) => {
         const { msg } = response.body;
         expect(msg).toBe("There is no review with that id");
+      });
+  });
+});
+
+describe("PATCH /api/reviews/:review_id", () => {
+  test("200: responds with updated review object with the correctly updated votes property", () => {
+    return request(app)
+      .patch("/api/reviews/1")
+      .send({ inc_votes: 1 })
+      .expect(200)
+      .then((response) => {
+        const { updatedReview } = response.body;
+        expect(updatedReview).toMatchObject({
+          review_id: 1,
+          title: expect.any(String),
+          review_body: expect.any(String),
+          designer: expect.any(String),
+          review_img_url: expect.any(String),
+          votes: 2,
+          category: expect.any(String),
+          owner: expect.any(String),
+          created_at: expect.any(String),
+        });
+      });
+  });
+  test("200: responds with original review with the votes unaffected, when sent an empty request", () => {
+    return request(app)
+      .patch("/api/reviews/3")
+      .send({})
+      .expect(200)
+      .then((response) => {
+        const { updatedReview } = response.body;
+        expect(updatedReview).toMatchObject({
+          review_id: 3,
+          title: expect.any(String),
+          review_body: expect.any(String),
+          designer: expect.any(String),
+          review_img_url: expect.any(String),
+          votes: 5,
+          category: expect.any(String),
+          owner: expect.any(String),
+          created_at: expect.any(String),
+        });
+      });
+  });
+  test("400: responds with error when the request body value is an incorrect data type", () => {
+    return request(app)
+      .patch("/api/reviews/2")
+      .send({ inc_votes: "pizza" })
+      .expect(400)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("votes must be a number!");
+      });
+  });
+  test("404: responds with error when given review_id that does not exist", () => {
+    return request(app)
+      .patch("/api/reviews/4004")
+      .expect(404)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("There is no review with that id");
+      });
+  });
+  test("400: responds with error when review_id is anything other than a number", () => {
+    return request(app)
+      .patch("/api/reviews/not_an_id")
+      .expect(400)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("ID must be a number!");
       });
   });
 });

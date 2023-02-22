@@ -82,3 +82,33 @@ exports.insertComments = (id, newComment) => {
     return result.rows[0];
   });
 };
+
+exports.updateReview = (id, voteAmount) => {
+  let queryString = `
+        UPDATE reviews
+        SET votes = votes + ${voteAmount}
+        WHERE review_id = ${id}
+        RETURNING *
+    `;
+
+  if (voteAmount && !Number(voteAmount)) {
+    return Promise.reject("incorrect data type");
+  }
+
+  if (id && !voteAmount) {
+    return db
+      .query(
+        `
+        SELECT * FROM reviews
+        WHERE review_id = ${id}
+    `
+      )
+      .then((result) => {
+        return result.rows[0];
+      });
+  }
+
+  return db.query(queryString).then((result) => {
+    return result.rows[0];
+  });
+};

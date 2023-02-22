@@ -5,6 +5,8 @@ exports.handleCustomErrors = (error, request, response, next) => {
     response.status(400).send({ msg: "ID must be a number!" });
   } else if (error === "No data has been sent") {
     response.status(400).send({ msg: "no data was sent!" });
+  } else if (error === "incorrect data type") {
+    response.status(400).send({ msg: "votes must be a number!" });
   } else {
     next(error);
   }
