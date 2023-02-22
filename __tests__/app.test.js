@@ -247,14 +247,14 @@ xdescribe("GET /api/reviews (queries)", () => {
         });
       });
   });
-  test("200: responds with comments sorted by the column specified in query");
-  test("200: responds with comments in order specified in query");
-  test(
-    "200: accepts a mixture of all three queries and responds with the data sorted correctly"
-  );
-  test(
-    "404: responds with error when given a category that exists but does not exist in the reviews"
-  );
-  test("400: responds with error when given invalid category");
-  test("400: responds with error when given invalid sort by option");
+  //   test("200: responds with comments sorted by the column specified in query");
+  //   test("200: responds with comments in order specified in query");
+  //   test(
+  //     "200: accepts a mixture of all three queries and responds with the data sorted correctly"
+  //   );
+  //   test(
+  //     "404: responds with error when given a category that exists but does not exist in the reviews"
+  //   );
+  //   test("400: responds with error when given invalid category");
+  //   test("400: responds with error when given invalid sort by option");
 });
