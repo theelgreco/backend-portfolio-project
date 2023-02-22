@@ -83,4 +83,15 @@ exports.insertComments = (id, newComment) => {
   });
 };
 
-exports.selectUsers = () => {};
+exports.selectUsers = () => {
+  return db
+    .query(
+      `
+        SELECT * FROM users
+        `
+    )
+    .then((result) => {
+      const users = result.rows;
+      return result.rows;
+    });
+};

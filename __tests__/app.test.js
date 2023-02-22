@@ -231,7 +231,7 @@ describe("GET api/users", () => {
       .get("/api/users")
       .expect(200)
       .then((response) => {
-        const { users } = response.body;
+        const users = response.body;
         expect(users.length).toBe(4);
         users.forEach((user) => {
           expect(user).toMatchObject({
