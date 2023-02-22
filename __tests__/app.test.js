@@ -164,3 +164,63 @@ describe("GET /api/reviews/:review_id/comments", () => {
       });
   });
 });
+
+describe("POST /api/reviews/:review_id/comments", () => {
+  test("201: responds with the posted comment object with the correct properties", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ username: "dav3rid", body: "this game sucks" })
+      .expect(201)
+      .then((response) => {
+        const { newComment } = response.body;
+        expect(newComment).toMatchObject({
+          body: "this game sucks",
+          votes: 0,
+          author: "dav3rid",
+          review_id: 1,
+          created_at: expect.any(String),
+          comment_id: expect.any(Number),
+        });
+      });
+  });
+  test("400: responds with error when the request body is not in the correct format", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ wrongProperty1: "wrongValue1", wrongProperty2: "wrongValue2" })
+      .expect(400)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("incorrect data sent!");
+      });
+  });
+  test("400: responds with error when no data is sent", () => {
+    return request(app)
+      .post("/api/reviews/3/comments")
+      .send({})
+      .expect(400)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("no data was sent!");
+      });
+  });
+  test("400: returns 400 when review_id is anything other than a number", () => {
+    return request(app)
+      .post("/api/reviews/wrongIdFormat/comments")
+      .send({ username: "stel", body: "this game sucks" })
+      .expect(400)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("ID must be a number!");
+      });
+  });
+  test("404: returns an error when given review_id that does not exist", () => {
+    return request(app)
+      .post("/api/reviews/932/comments")
+      .send({ username: "stel", body: "this game sucks" })
+      .expect(404)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("There is no review with that id");
+      });
+  });
+});

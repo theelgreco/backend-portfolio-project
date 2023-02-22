@@ -62,3 +62,23 @@ exports.selectComments = (review_id) => {
       return result.rows;
     });
 };
+
+exports.insertComments = (id, newComment) => {
+  const { username, body } = newComment;
+
+  if (Object.keys(newComment).length === 0) {
+    return Promise.reject("No data has been sent");
+  }
+
+  let valuesToInsert = [body, username, id];
+  let queryString = `
+          INSERT INTO comments
+          (body, author, review_id)
+          VALUES ($1, $2, $3)
+          RETURNING *
+          `;
+
+  return db.query(queryString, valuesToInsert).then((result) => {
+    return result.rows[0];
+  });
+};
