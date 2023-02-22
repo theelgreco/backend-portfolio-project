@@ -4,6 +4,8 @@ const {
   selectReviewsById,
   insertComments,
   selectComments,
+  selectUsers,
+  updateReview,
 } = require("../models/models.js");
 
 exports.getCategories = (request, response, next) => {
@@ -64,6 +66,34 @@ exports.postComment = (request, response, next) => {
     .then((result) => {
       const newComment = result[1];
       response.status(201).send({ newComment });
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
+exports.getUsers = (request, response, next) => {
+  selectUsers()
+    .then((result) => {
+      const users = { users: result };
+      response.status(200).send(users);
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
+exports.patchReview = (request, response, next) => {
+  const { review_id } = request.params;
+  const { inc_votes } = request.body;
+
+  const selectReviewsPromise = selectReviewsById(review_id);
+  const updateReviewPromise = updateReview(review_id, inc_votes);
+
+  Promise.all([selectReviewsPromise, updateReviewPromise])
+    .then((result) => {
+      const review = result[1];
+      response.status(200).send({ review });
     })
     .catch((error) => {
       next(error);

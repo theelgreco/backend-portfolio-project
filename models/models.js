@@ -93,3 +93,43 @@ exports.insertComments = (id, newComment) => {
     return result.rows[0];
   });
 };
+
+exports.selectUsers = () => {
+  return db
+    .query(
+      `
+        SELECT * FROM users
+        `
+    )
+    .then((result) => {
+      const users = result.rows;
+      return result.rows;
+    });
+};
+
+exports.updateReview = (id, voteAmount) => {
+  let queryParams = [];
+  let queryString = `
+        UPDATE reviews
+        SET votes = votes + $2
+        WHERE review_id = $1
+        RETURNING *
+    `;
+
+  if (id && !voteAmount) {
+    queryParams.push(id);
+    return db
+      .query(`SELECT * FROM reviews WHERE review_id = $1`, queryParams)
+      .then((result) => {
+        return result.rows[0];
+      });
+  }
+
+  if (id && voteAmount) {
+    queryParams.push(id, voteAmount);
+  }
+
+  return db.query(queryString, queryParams).then((result) => {
+    return result.rows[0];
+  });
+};
