@@ -83,6 +83,19 @@ exports.insertComments = (id, newComment) => {
   });
 };
 
+exports.selectUsers = () => {
+  return db
+    .query(
+      `
+        SELECT * FROM users
+        `
+    )
+    .then((result) => {
+      const users = result.rows;
+      return result.rows;
+    });
+};
+
 exports.updateReview = (id, voteAmount) => {
   let queryParams = [];
   let queryString = `
@@ -91,10 +104,6 @@ exports.updateReview = (id, voteAmount) => {
         WHERE review_id = $1
         RETURNING *
     `;
-
-  //   if (voteAmount && !Number(voteAmount)) {
-  //     return Promise.reject("incorrect data type");
-  //   }
 
   if (id && !voteAmount) {
     queryParams.push(id);

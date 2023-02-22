@@ -4,6 +4,7 @@ const {
   selectReviewsById,
   insertComments,
   selectComments,
+  selectUsers,
   updateReview,
 } = require("../models/models.js");
 
@@ -65,6 +66,17 @@ exports.postComment = (request, response, next) => {
     .then((result) => {
       const newComment = result[1];
       response.status(201).send({ newComment });
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
+exports.getUsers = (request, response, next) => {
+  selectUsers()
+    .then((result) => {
+      const users = { users: result };
+      response.status(200).send(users);
     })
     .catch((error) => {
       next(error);
