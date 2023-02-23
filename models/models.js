@@ -56,18 +56,41 @@ exports.selectReviewsById = (id) => {
   });
 };
 
-exports.selectComments = (review_id) => {
-  return db
-    .query(
-      `
+exports.selectComments = (review_id, comment_id) => {
+  let queryParams = [];
+
+  if (review_id) {
+    queryParams.push(review_id);
+    return db
+      .query(
+        `
     SELECT * FROM comments
-    WHERE review_id = ${review_id}
+    WHERE review_id = $1
     ORDER BY created_at DESC
-    `
-    )
-    .then((result) => {
-      return result.rows;
-    });
+    `,
+        queryParams
+      )
+      .then((result) => {
+        return result.rows;
+      });
+  }
+
+  if (comment_id) {
+    queryParams.push(comment_id);
+    return db
+      .query(
+        `
+      SELECT * FROM comments
+      WHERE comment_id = $1
+    `,
+        queryParams
+      )
+      .then((result) => {
+        if (result.rowCount === 0) {
+          return Promise.reject("comment id does not exist");
+        }
+      });
+  }
 };
 
 exports.insertComments = (id, newComment) => {
@@ -127,5 +150,13 @@ exports.updateReview = (id, voteAmount) => {
 
   return db.query(queryString, queryParams).then((result) => {
     return result.rows[0];
+  });
+};
+
+exports.removeComment = (comment_id) => {
+  let queryParams = [comment_id];
+  let queryString = "DELETE FROM comments WHERE comment_id = $1";
+  return db.query(queryString, queryParams).then((result) => {
+    return result.rows;
   });
 };

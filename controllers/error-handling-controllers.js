@@ -7,6 +7,8 @@ exports.handleCustomErrors = (error, request, response, next) => {
     response.status(400).send({ msg: "no data was sent!" });
   } else if (error === "incorrect data type") {
     response.status(400).send({ msg: "votes must be a number!" });
+  } else if (error === "comment id does not exist") {
+    response.status(404).send({ msg: "There is no comment with that ID" });
   } else {
     next(error);
   }
