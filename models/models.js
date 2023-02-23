@@ -29,8 +29,14 @@ exports.selectReviews = () => {
 };
 
 exports.selectReviewsById = (id) => {
-  let queryString = `SELECT * FROM reviews
-    WHERE review_id = $1`;
+  let queryString = `
+  SELECT reviews.*, COUNT(comments.review_id) AS comment_count
+  FROM reviews
+  LEFT JOIN comments
+  ON reviews.review_id = comments.review_id
+  WHERE reviews.review_id = $1
+  GROUP BY reviews.review_id
+  `;
   const queryParams = [];
 
   if (Number(id)) {
@@ -44,6 +50,7 @@ exports.selectReviewsById = (id) => {
       return Promise.reject("invalid review_id");
     } else {
       const review = result.rows[0];
+      review.comment_count = Number(review.comment_count);
       return review;
     }
   });
