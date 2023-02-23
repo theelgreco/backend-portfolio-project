@@ -225,25 +225,6 @@ describe("POST /api/reviews/:review_id/comments", () => {
   });
 });
 
-describe("GET api/users", () => {
-  test("200: responds with an array of all user objects", () => {
-    return request(app)
-      .get("/api/users")
-      .expect(200)
-      .then((response) => {
-        const { users } = response.body;
-        expect(users.length).toBe(4);
-        users.forEach((user) => {
-          expect(user).toMatchObject({
-            username: expect.any(String),
-            name: expect.any(String),
-            avatar_url: expect.any(String),
-          });
-        });
-      });
-  });
-});
-
 describe("PATCH /api/reviews/:review_id", () => {
   test("200: responds with updated review object with the correctly incremented votes property", () => {
     return request(app)
@@ -335,19 +316,39 @@ describe("PATCH /api/reviews/:review_id", () => {
   });
 });
 
-xdescribe("GET /api/reviews (queries)", () => {
-  test("200: only responds with comments from the category specified in query", () => {
+describe("GET api/users", () => {
+  test("200: responds with an array of all user objects", () => {
     return request(app)
-      .get("/api/reviews?social_deduction")
+      .get("/api/users")
       .expect(200)
       .then((response) => {
-        const reviews = response.body;
+        const { users } = response.body;
+        expect(users.length).toBe(4);
+        users.forEach((user) => {
+          expect(user).toMatchObject({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          });
+        });
+      });
+  });
+});
+
+describe("GET /api/reviews (queries)", () => {
+  test("200: only responds with reviews from the category specified in query", () => {
+    return request(app)
+      .get("/api/reviews?category=social+deduction")
+      .expect(200)
+      .then((response) => {
+        const { reviews } = response.body;
+        expect(reviews.length).toBe(11);
         reviews.forEach((review) => {
           expect(review).toMatchObject({
             owner: expect.any(String),
             title: expect.any(String),
             review_id: expect.any(Number),
-            category: "social_deduction",
+            category: "social deduction",
             review_img_url: expect.any(String),
             created_at: expect.any(String),
             votes: expect.any(Number),
@@ -356,15 +357,102 @@ xdescribe("GET /api/reviews (queries)", () => {
           });
         });
       });
-    //   test("200: responds with comments sorted by the column specified in query");
-    //   test("200: responds with comments in order specified in query");
-    //   test(
-    //     "200: accepts a mixture of all three queries and responds with the data sorted correctly"
-    //   );
-    //   test(
-    //     "404: responds with error when given a category that exists but does not exist in the reviews"
-    //   );
-    //   test("400: responds with error when given invalid category");
-    //   test("400: responds with error when given invalid sort by option");
+  });
+  test("200: responds with reviews sorted by the column specified in query", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=votes")
+      .expect(200)
+      .then((response) => {
+        const { reviews } = response.body;
+        expect(reviews.length).toBe(13);
+        expect(reviews).toBeSortedBy("votes", { descending: true });
+        reviews.forEach((review) => {
+          expect(review).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            review_id: expect.any(Number),
+            category: expect.any(String),
+            review_img_url: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            designer: expect.any(String),
+            comment_count: expect.any(Number),
+          });
+        });
+      });
+  });
+  test("200: responds with reviews in order specified in query", () => {
+    return request(app)
+      .get("/api/reviews?order=asc")
+      .expect(200)
+      .then((response) => {
+        const { reviews } = response.body;
+        expect(reviews.length).toBe(13);
+        expect(reviews).toBeSortedBy("created_at", { descending: false });
+        reviews.forEach((review) => {
+          expect(review).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            review_id: expect.any(Number),
+            category: expect.any(String),
+            review_img_url: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            designer: expect.any(String),
+            comment_count: expect.any(Number),
+          });
+        });
+      });
+  });
+  test("200: accepts a mixture of all three queries and responds with the data sorted correctly", () => {
+    return request(app)
+      .get("/api/reviews?category=social+deduction&sort_by=votes&order=asc")
+      .expect(200)
+      .then((response) => {
+        const { reviews } = response.body;
+        expect(reviews.length).toBe(11);
+        expect(reviews).toBeSortedBy("votes", { descending: false });
+        reviews.forEach((review) => {
+          expect(review).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            review_id: expect.any(Number),
+            category: "social deduction",
+            review_img_url: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            designer: expect.any(String),
+            comment_count: expect.any(Number),
+          });
+        });
+      });
+  });
+  test("200: responds with empty array on key of reviews when given a category that exists but does not belong to any reviews", () => {
+    return request(app)
+      .get(`/api/reviews?category=children's+games`)
+      .expect(200)
+      .then((response) => {
+        const { reviews } = response.body;
+        expect(reviews.length).toBe(0);
+        expect(response.body).toHaveProperty("reviews");
+      });
+  });
+  test("400: responds with error when given invalid category", () => {
+    return request(app)
+      .get("/api/reviews?category=wrong_category")
+      .expect(400)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("That is not a valid category");
+      });
+  });
+  test("400: responds with error when given invalid sort by option", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=bananas")
+      .expect(400)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("Invalid sort by option");
+      });
   });
 });

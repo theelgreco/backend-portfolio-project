@@ -19,8 +19,15 @@ exports.getCategories = (request, response, next) => {
 };
 
 exports.getReviews = (request, response, next) => {
-  selectReviews()
-    .then((reviews) => {
+  const { category, sort_by, order } = request.query;
+
+  const categoryPromise = selectCategories(category);
+  const reviewsPromise = selectReviews(category, sort_by, order);
+
+  Promise.all([categoryPromise, reviewsPromise])
+    .then((result) => {
+      reviews = result[1];
+
       response.status(200).send({ reviews });
     })
     .catch((error) => {
@@ -72,17 +79,6 @@ exports.postComment = (request, response, next) => {
     });
 };
 
-exports.getUsers = (request, response, next) => {
-  selectUsers()
-    .then((result) => {
-      const users = { users: result };
-      response.status(200).send(users);
-    })
-    .catch((error) => {
-      next(error);
-    });
-};
-
 exports.patchReview = (request, response, next) => {
   const { review_id } = request.params;
   const { inc_votes } = request.body;
@@ -94,6 +90,17 @@ exports.patchReview = (request, response, next) => {
     .then((result) => {
       const review = result[1];
       response.status(200).send({ review });
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
+exports.getUsers = (request, response, next) => {
+  selectUsers()
+    .then((result) => {
+      const users = { users: result };
+      response.status(200).send(users);
     })
     .catch((error) => {
       next(error);
