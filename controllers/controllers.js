@@ -6,6 +6,7 @@ const {
   selectComments,
   selectUsers,
   updateReview,
+  removeComment,
 } = require("../models/models.js");
 
 exports.getCategories = (request, response, next) => {
@@ -94,6 +95,18 @@ exports.patchReview = (request, response, next) => {
     .then((result) => {
       const review = result[1];
       response.status(200).send({ review });
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
+exports.deleteComment = (request, response, next) => {
+  const { comment_id } = request.params;
+  removeComment(comment_id)
+    .then((result) => {
+      console.log(result);
+      response.status(204).send({ msg: "The comment has been deleted" });
     })
     .catch((error) => {
       next(error);
