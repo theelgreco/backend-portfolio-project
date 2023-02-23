@@ -30,5 +30,35 @@
         }
       ]
     }
+  },
+  "GET /api/reviews/:review_id": {
+    "description": "",
+    "queries": [],
+    "exampleResponse": {}
+  },
+  "GET /api/reviews/:review_id/comments": {
+    "description": "",
+    "queries": [],
+    "exampleResponse": {}
+  },
+  "POST /api/reviews/:review_id/comments": {
+    "description": "",
+    "queries": [],
+    "exampleResponse": {}
+  },
+  "GET /api/users": {
+    "description": "",
+    "queries": [],
+    "exampleResponse": {}
+  },
+  "PATCH /api/reviews/:review_id": {
+    "description": "",
+    "queries": [],
+    "exampleResponse": {}
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "",
+    "queries": [],
+    "exampleResponse": {}
   }
 }
