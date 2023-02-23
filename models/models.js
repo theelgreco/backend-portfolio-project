@@ -1,31 +1,61 @@
 const db = require("../db/connection.js");
 
-exports.selectCategories = () => {
-  return db.query(`SELECT * FROM categories`).then((result) => {
+exports.selectCategories = (category) => {
+  let queryParams = [];
+  let queryString = `SELECT * FROM categories`;
+
+  if (category) {
+    queryParams.push(category);
+    queryString += ` WHERE slug = $1`;
+  }
+
+  return db.query(queryString, queryParams).then((result) => {
+    if (result.rowCount === 0) {
+      return Promise.reject("invalid category");
+    }
     const categories = result.rows;
     return categories;
   });
 };
 
-exports.selectReviews = () => {
-  return db
-    .query(
-      `SELECT reviews.*, COUNT(comments.review_id) AS comment_count
-         FROM reviews
-         LEFT JOIN comments
-         ON reviews.review_id = comments.review_id
-         GROUP BY reviews.review_id
-         ORDER BY created_at DESC`
-    )
-    .then((result) => {
-      const reviews = result.rows;
-      //converted comment count to number as it was being returned as a string
-      reviews.map((review) => {
-        return (review.comment_count = Number(review.comment_count));
-      });
+exports.selectReviews = (category, sort_by, order) => {
+  let queryParams = [];
 
-      return reviews;
+  let queryString = `
+    SELECT reviews.*, COUNT(comments.review_id) AS comment_count
+    FROM reviews
+    LEFT JOIN comments
+    ON reviews.review_id = comments.review_id
+    `;
+
+  if (category) {
+    queryParams.push(category);
+    queryString += `WHERE category = $1 GROUP BY reviews.review_id`;
+  } else {
+    queryString += ` GROUP BY reviews.review_id`;
+  }
+
+  if (sort_by) {
+    queryString += ` ORDER BY ${sort_by}`;
+  } else {
+    queryString += ` ORDER BY created_at`;
+  }
+
+  if (order) {
+    queryString += ` ${order}`;
+  } else {
+    queryString += ` DESC`;
+  }
+
+  return db.query(queryString, queryParams).then((result) => {
+    const reviews = result.rows;
+    //converted comment count to number as it was being returned as a string
+    reviews.map((review) => {
+      return (review.comment_count = Number(review.comment_count));
     });
+
+    return reviews;
+  });
 };
 
 exports.selectReviewsById = (id) => {
@@ -113,19 +143,6 @@ exports.insertComments = (id, newComment) => {
   });
 };
 
-exports.selectUsers = () => {
-  return db
-    .query(
-      `
-        SELECT * FROM users
-        `
-    )
-    .then((result) => {
-      const users = result.rows;
-      return result.rows;
-    });
-};
-
 exports.updateReview = (id, voteAmount) => {
   let queryParams = [];
   let queryString = `
@@ -151,6 +168,19 @@ exports.updateReview = (id, voteAmount) => {
   return db.query(queryString, queryParams).then((result) => {
     return result.rows[0];
   });
+};
+
+exports.selectUsers = () => {
+  return db
+    .query(
+      `
+          SELECT * FROM users
+          `
+    )
+    .then((result) => {
+      const users = result.rows;
+      return result.rows;
+    });
 };
 
 exports.removeComment = (comment_id) => {
