@@ -90,8 +90,17 @@ describe("GET /api/reviews/:review_id", () => {
           category: expect.any(String),
           owner: expect.any(String),
           created_at: expect.any(String),
-          comment_count: 0,
         });
+      });
+  });
+  test("200: responds with comment count property with the correct value", () => {
+    return request(app)
+      .get("/api/reviews/5")
+      .expect(200)
+      .then((response) => {
+        const { review } = response.body;
+        expect(review).toHaveProperty("comment_count");
+        expect(review.comment_count).toBe(0);
       });
   });
   test("404: returns 404 status with custom message when invalid id given", () => {
