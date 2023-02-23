@@ -93,6 +93,16 @@ describe("GET /api/reviews/:review_id", () => {
         });
       });
   });
+  test("200: responds with comment count property with the correct value", () => {
+    return request(app)
+      .get("/api/reviews/5")
+      .expect(200)
+      .then((response) => {
+        const { review } = response.body;
+        expect(review).toHaveProperty("comment_count");
+        expect(review.comment_count).toBe(0);
+      });
+  });
   test("404: returns 404 status with custom message when invalid id given", () => {
     return request(app)
       .get("/api/reviews/1000")
@@ -453,6 +463,35 @@ describe("GET /api/reviews (queries)", () => {
       .then((response) => {
         const { msg } = response.body;
         expect(msg).toBe("Invalid sort by option");
+      });
+  });
+});
+
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204: responds with no content when comment is succesfully deleted", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then((response) => {
+        expect(response.body).toEqual({});
+      });
+  });
+  test("400: responds with error when invalid comment id type is given", () => {
+    return request(app)
+      .delete("/api/comments/not-a-valid-comment")
+      .expect(400)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("invalid data type sent");
+      });
+  });
+  test("404: responds with error when non-existent comment id is given", () => {
+    return request(app)
+      .delete("/api/comments/1005")
+      .expect(404)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("There is no comment with that ID");
       });
   });
 });

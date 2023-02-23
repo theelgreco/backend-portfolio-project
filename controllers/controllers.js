@@ -6,6 +6,7 @@ const {
   selectComments,
   selectUsers,
   updateReview,
+  removeComment,
 } = require("../models/models.js");
 
 exports.getCategories = (request, response, next) => {
@@ -101,6 +102,21 @@ exports.getUsers = (request, response, next) => {
     .then((result) => {
       const users = { users: result };
       response.status(200).send(users);
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
+exports.deleteComment = (request, response, next) => {
+  const { comment_id } = request.params;
+
+  const selectCommentsPromise = selectComments(null, comment_id);
+  const removeCommentPromise = removeComment(comment_id);
+
+  Promise.all([selectCommentsPromise, removeCommentPromise])
+    .then((result) => {
+      response.status(204).send();
     })
     .catch((error) => {
       next(error);

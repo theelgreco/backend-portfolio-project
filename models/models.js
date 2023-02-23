@@ -59,8 +59,14 @@ exports.selectReviews = (category, sort_by, order) => {
 };
 
 exports.selectReviewsById = (id) => {
-  let queryString = `SELECT * FROM reviews
-    WHERE review_id = $1`;
+  let queryString = `
+  SELECT reviews.*, COUNT(comments.review_id) AS comment_count
+  FROM reviews
+  LEFT JOIN comments
+  ON reviews.review_id = comments.review_id
+  WHERE reviews.review_id = $1
+  GROUP BY reviews.review_id
+  `;
   const queryParams = [];
 
   if (Number(id)) {
@@ -74,23 +80,47 @@ exports.selectReviewsById = (id) => {
       return Promise.reject("invalid review_id");
     } else {
       const review = result.rows[0];
+      review.comment_count = Number(review.comment_count);
       return review;
     }
   });
 };
 
-exports.selectComments = (review_id) => {
-  return db
-    .query(
-      `
+exports.selectComments = (review_id, comment_id) => {
+  let queryParams = [];
+
+  if (review_id) {
+    queryParams.push(review_id);
+    return db
+      .query(
+        `
     SELECT * FROM comments
-    WHERE review_id = ${review_id}
+    WHERE review_id = $1
     ORDER BY created_at DESC
-    `
-    )
-    .then((result) => {
-      return result.rows;
-    });
+    `,
+        queryParams
+      )
+      .then((result) => {
+        return result.rows;
+      });
+  }
+
+  if (comment_id) {
+    queryParams.push(comment_id);
+    return db
+      .query(
+        `
+      SELECT * FROM comments
+      WHERE comment_id = $1
+    `,
+        queryParams
+      )
+      .then((result) => {
+        if (result.rowCount === 0) {
+          return Promise.reject("comment id does not exist");
+        }
+      });
+  }
 };
 
 exports.insertComments = (id, newComment) => {
@@ -151,4 +181,12 @@ exports.selectUsers = () => {
       const users = result.rows;
       return result.rows;
     });
+};
+
+exports.removeComment = (comment_id) => {
+  let queryParams = [comment_id];
+  let queryString = "DELETE FROM comments WHERE comment_id = $1";
+  return db.query(queryString, queryParams).then((result) => {
+    return result.rows;
+  });
 };
