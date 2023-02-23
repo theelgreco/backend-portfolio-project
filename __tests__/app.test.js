@@ -345,7 +345,7 @@ describe("PATCH /api/reviews/:review_id", () => {
   });
 });
 
-xdescribe("DELETE /api/comments/:comment_id", () => {
+describe("DELETE /api/comments/:comment_id", () => {
   test("204: responds with no content when comment is succesfully deleted", () => {
     return request(app)
       .delete("/api/comments/1")

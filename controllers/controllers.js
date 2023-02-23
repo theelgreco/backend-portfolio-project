@@ -104,8 +104,11 @@ exports.patchReview = (request, response, next) => {
 exports.deleteComment = (request, response, next) => {
   const { comment_id } = request.params;
 
-  removeComment(comment_id)
-    .then(() => {
+  const selectCommentsPromise = selectComments(null, comment_id);
+  const removeCommentPromise = removeComment(comment_id);
+
+  Promise.all([selectCommentsPromise, removeCommentPromise])
+    .then((result) => {
       response.status(204).send();
     })
     .catch((error) => {
