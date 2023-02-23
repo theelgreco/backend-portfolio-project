@@ -336,28 +336,27 @@ describe("PATCH /api/reviews/:review_id", () => {
 });
 
 xdescribe("DELETE /api/comments/:comment_id", () => {
-  test("204: responds with success message when comment is succesfully deleted", () => {
+  test("204: responds with no content when comment is succesfully deleted", () => {
     return request(app)
       .delete("/api/comments/1")
       .expect(204)
       .then((response) => {
-        const { msg } = response.body;
-        expect(msg).toBe("The comment has been deleted");
+        expect(response.body).toEqual({});
       });
   });
-  test("404: responds with error when invalid comment id type is given", () => {
+  test("400: responds with error when invalid comment id type is given", () => {
     return request(app)
       .delete("/api/comments/not-a-valid-comment")
-      .expect(404)
+      .expect(400)
       .then((response) => {
         const { msg } = response.body;
-        expect(msg).toBe("Comment ID must be a number!");
+        expect(msg).toBe("invalid data type sent");
       });
   });
-  test("400: responds with error when non-existent comment id is given", () => {
+  test("404: responds with error when non-existent comment id is given", () => {
     return request(app)
       .delete("/api/comments/1005")
-      .expect(400)
+      .expect(404)
       .then((response) => {
         const { msg } = response.body;
         expect(msg).toBe("There is no comment with that ID");

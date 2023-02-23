@@ -103,10 +103,10 @@ exports.patchReview = (request, response, next) => {
 
 exports.deleteComment = (request, response, next) => {
   const { comment_id } = request.params;
+
   removeComment(comment_id)
-    .then((result) => {
-      console.log(result);
-      response.status(204).send({ msg: "The comment has been deleted" });
+    .then(() => {
+      response.status(204).send();
     })
     .catch((error) => {
       next(error);

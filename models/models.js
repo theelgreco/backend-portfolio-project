@@ -50,6 +50,8 @@ exports.selectReviewsById = (id) => {
 };
 
 exports.selectComments = (review_id) => {
+  let queryParams = [];
+
   return db
     .query(
       `
@@ -127,6 +129,6 @@ exports.removeComment = (comment_id) => {
   let queryParams = [comment_id];
   let queryString = "DELETE FROM comments WHERE comment_id = $1";
   return db.query(queryString, queryParams).then((result) => {
-   
+    return result.rows;
   });
 };
