@@ -34,7 +34,17 @@
   "GET /api/reviews/:review_id": {
     "description": "Serves an object of a single review ",
     "queries": [],
-    "exampleResponse": {}
+    "exampleResponse": { "review": {
+          "review_id": 5,
+          "title": "Proident tempor et.",
+          "review_body": "",
+          "designer": expect.any(String),
+          "review_img_url": expect.any(String),
+          "votes": expect.any(Number),
+          "category": expect.any(String),
+          "owner": expect.any(String),
+          "created_at": expect.any(String),
+    }}
   },
   "GET /api/reviews/:review_id/comments": {
     "description": "",
