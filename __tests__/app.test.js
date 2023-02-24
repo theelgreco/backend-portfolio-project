@@ -437,14 +437,13 @@ describe("GET /api/reviews (queries)", () => {
         });
       });
   });
-  test("200: responds with empty array on key of reviews when given a category that exists but does not belong to any reviews", () => {
+  test("404: responds with error when given a category that exists but does not belong to any reviews", () => {
     return request(app)
       .get(`/api/reviews?category=children's+games`)
-      .expect(200)
+      .expect(404)
       .then((response) => {
-        const { reviews } = response.body;
-        expect(reviews.length).toBe(0);
-        expect(response.body).toHaveProperty("reviews");
+        const { msg } = response.body;
+        expect(msg).toBe("There are no reviews for that category");
       });
   });
   test("400: responds with error when given invalid category", () => {
@@ -463,6 +462,15 @@ describe("GET /api/reviews (queries)", () => {
       .then((response) => {
         const { msg } = response.body;
         expect(msg).toBe("Invalid sort by option");
+      });
+  });
+  test("400: responds with error when given invalid order by option", () => {
+    return request(app)
+      .get("/api/reviews?order=sideways")
+      .expect(400)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("Invalid order option");
       });
   });
 });

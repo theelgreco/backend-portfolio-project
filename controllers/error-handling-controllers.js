@@ -11,6 +11,14 @@ exports.handleCustomErrors = (error, request, response, next) => {
     response.status(400).send({ msg: "That is not a valid category" });
   } else if (error === "comment id does not exist") {
     response.status(404).send({ msg: "There is no comment with that ID" });
+  } else if (error === "invalid sort by option") {
+    response.status(400).send({ msg: "Invalid sort by option" });
+  } else if (error === "invalid order by option") {
+    response.status(400).send({ msg: "Invalid order option" });
+  } else if (error === "non-existent category") {
+    response
+      .status(404)
+      .send({ msg: "There are no reviews for that category" });
   } else {
     next(error);
   }
@@ -21,8 +29,6 @@ exports.handlePSQLerrors = (error, request, response, next) => {
     response.status(400).send({ msg: "incorrect data sent!" });
   } else if (error.code === "22P02") {
     response.status(400).send({ msg: "invalid data type sent" });
-  } else if (error.code === "42703") {
-    response.status(400).send({ msg: "Invalid sort by option" });
   } else {
     next(error);
   }
