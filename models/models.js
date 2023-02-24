@@ -1,4 +1,13 @@
 const db = require("../db/connection.js");
+const fsPromises = require("fs").promises;
+
+exports.readEndpoints = () => {
+  return fsPromises
+    .readFile(`${__dirname}/../endpoints.json`, "utf-8")
+    .then((result) => {
+      return result;
+    });
+};
 
 exports.selectCategories = (category) => {
   let queryString = `SELECT * FROM categories`;

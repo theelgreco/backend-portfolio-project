@@ -19,6 +19,23 @@ describe("bad paths", () => {
   });
 });
 
+describe("GET /api", () => {
+  test("200: responds with all endpoints", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then((response) => {
+        const { endpoints } = response.body;
+        expect(response.body).toHaveProperty("endpoints");
+        for (let endpoint in endpoints) {
+          expect(endpoints[endpoint]).toHaveProperty("description");
+          expect(endpoints[endpoint]).toHaveProperty("queries");
+          expect(endpoints[endpoint]).toHaveProperty("exampleResponse");
+        }
+      });
+  });
+});
+
 describe("GET /api/categories", () => {
   test("200: responds with an array of objects with the correct properties", () => {
     return request(app)
@@ -42,9 +59,7 @@ describe("GET /api/reviews", () => {
       .expect(200)
       .then((response) => {
         const { reviews } = response.body;
-
         expect(reviews.length).toBe(13);
-
         reviews.forEach((review) => {
           expect(review).toMatchObject({
             owner: expect.any(String),

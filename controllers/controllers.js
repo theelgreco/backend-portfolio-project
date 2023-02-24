@@ -7,7 +7,20 @@ const {
   selectUsers,
   updateReview,
   removeComment,
+  readEndpoints,
 } = require("../models/models.js");
+
+exports.getEndpoints = (request, response, next) => {
+  readEndpoints()
+    .then((result) => {
+      const parsedEndpoints = JSON.parse(result);
+      const endpoints = { endpoints: parsedEndpoints };
+      response.status(200).send(endpoints);
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
 
 exports.getCategories = (request, response, next) => {
   selectCategories()

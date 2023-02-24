@@ -9,6 +9,7 @@ const {
   getUsers,
   patchReview,
   deleteComment,
+  getEndpoints,
 } = require("./controllers/controllers.js");
 const {
   handleCustomErrors,
@@ -16,6 +17,8 @@ const {
   handle500errors,
 } = require("./controllers/error-handling-controllers");
 app.use(express.json());
+
+app.get("/api", getEndpoints);
 
 app.get("/api/categories", getCategories);
 
