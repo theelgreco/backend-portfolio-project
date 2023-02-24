@@ -20,7 +20,7 @@ describe("bad paths", () => {
 });
 
 describe("GET /api", () => {
-  test.only("200: responds with all endpoints", () => {
+  test("200: responds with all endpoints", () => {
     return request(app)
       .get("/api")
       .expect(200)
