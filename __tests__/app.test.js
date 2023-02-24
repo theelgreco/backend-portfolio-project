@@ -447,13 +447,13 @@ describe("GET /api/reviews (queries)", () => {
         expect(response.body).toHaveProperty("reviews");
       });
   });
-  test("400: responds with error when given invalid category", () => {
+  test("404: responds with error when given invalid category", () => {
     return request(app)
       .get("/api/reviews?category=wrong_category")
-      .expect(400)
+      .expect(404)
       .then((response) => {
         const { msg } = response.body;
-        expect(msg).toBe("That is not a valid category");
+        expect(msg).toBe("That category does not exist");
       });
   });
   test("400: responds with error when given invalid sort by option", () => {
