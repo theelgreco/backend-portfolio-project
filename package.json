@@ -2,8 +2,10 @@
   "name": "backend-portfolio-project",
   "version": "1.0.0",
   "description": "backend-portfolio-project",
-  "main": "index.js",
+  "main": "listen.js",
   "scripts": {
+    "start": "node listen.js",
+    "seed-prod": "NODE_ENV=production npm run seed",
     "setup-dbs": "psql -f ./db/setup.sql",
     "seed": "node ./db/seeds/run-seed.js",
     "test": "psql -f ./db/setup.sql && jest",
@@ -26,13 +28,13 @@
     "fs": "^0.0.1-security",
     "jest-sorted": "^1.0.14",
     "pg": "^8.7.3",
-    "supertest": "^6.3.3"
+    "supertest": "^6.3.3",
+    "pg-format": "^1.0.4"
   },
   "devDependencies": {
     "husky": "^8.0.2",
     "jest": "^27.5.1",
-    "jest-extended": "^2.0.0",
-    "pg-format": "^1.0.4"
+    "jest-extended": "^2.0.0"
   },
   "jest": {
     "setupFilesAfterEnv": [
