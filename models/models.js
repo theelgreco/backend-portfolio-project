@@ -1,24 +1,35 @@
 const db = require("../db/connection.js");
 
 exports.selectCategories = (category) => {
-  let queryParams = [];
   let queryString = `SELECT * FROM categories`;
 
-  if (category) {
-    queryParams.push(category);
-    queryString += ` WHERE slug = $1`;
-  }
+  return db.query(queryString).then((result) => {
+    const categories = result.rows;
 
-  return db.query(queryString, queryParams).then((result) => {
-    if (result.rowCount === 0) {
+    const validCategories = [];
+    categories.forEach((category) => validCategories.push(category.slug));
+
+    if (category && !validCategories.includes(category)) {
       return Promise.reject("invalid category");
     }
-    const categories = result.rows;
+
     return categories;
   });
 };
 
 exports.selectReviews = (category, sort_by, order) => {
+  const validSortByOptions = [
+    "review_id",
+    "title",
+    "designer",
+    "owner",
+    "review_img_url",
+    "review_body",
+    "category",
+    "created_at",
+    "votes",
+  ];
+  const validOrderOptions = ["asc", "desc"];
   let queryParams = [];
 
   let queryString = `
@@ -35,13 +46,17 @@ exports.selectReviews = (category, sort_by, order) => {
     queryString += ` GROUP BY reviews.review_id`;
   }
 
-  if (sort_by) {
+  if (sort_by && !validSortByOptions.includes(sort_by)) {
+    return Promise.reject("invalid sort by option");
+  } else if (sort_by) {
     queryString += ` ORDER BY ${sort_by}`;
   } else {
     queryString += ` ORDER BY created_at`;
   }
 
-  if (order) {
+  if (order && !validOrderOptions.includes(order)) {
+    return Promise.reject("invalid order by option");
+  } else if (order) {
     queryString += ` ${order}`;
   } else {
     queryString += ` DESC`;
