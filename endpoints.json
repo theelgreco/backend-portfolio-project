@@ -20,54 +20,131 @@
     "exampleResponse": {
       "reviews": [
         {
-          "title": "One Night Ultimate Werewolf",
+          "review_id": 3,
+          "title": "Ultimate Werewolf",
+          "category": "social deduction",
           "designer": "Akihisa Okui",
-          "owner": "happyamy2016",
-          "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-          "category": "hidden-roles",
-          "created_at": 1610964101251,
-          "votes": 5
+          "owner": "bainesface",
+          "review_body": "We couldn't find the werewolf!",
+          "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?w=700&h=700",
+          "created_at": "2021-01-18T10:01:41.251Z",
+          "votes": 5,
+          "comment_count": 3
         }
       ]
     }
   },
   "GET /api/reviews/:review_id": {
-    "description": "Serves an object of a single review ",
+    "description": "Serves a single review with the specified id",
     "queries": [],
-    "exampleResponse": { "review": {
-          "review_id": 5,
-          "title": "Proident tempor et.",
-          "review_body": "",
-          "designer": expect.any(String),
-          "review_img_url": expect.any(String),
-          "votes": expect.any(Number),
-          "category": expect.any(String),
-          "owner": expect.any(String),
-          "created_at": expect.any(String),
-    }}
+    "exampleResponse": {
+      "review": {
+        "review_id": 5,
+        "title": "Proident tempor et.",
+        "category": "social deduction",
+        "designer": "Seymour Buttz",
+        "owner": "mallionaire",
+        "review_body": "Labore occaecat sunt qui commodo anim anim aliqua adipisicing aliquip fugiat. Ad in ipsum incididunt esse amet deserunt aliqua exercitation occaecat nostrud irure labore ipsum. Culpa tempor non voluptate reprehenderit deserunt pariatur cupidatat aliqua adipisicing. Nostrud labore dolor fugiat sint consequat excepteur dolore irure eu. Anim ex adipisicing magna deserunt enim fugiat do nulla officia sint. Ex tempor ut aliquip exercitation eiusmod. Excepteur deserunt officia voluptate sunt aliqua esse deserunt velit. In id non proident veniam ipsum id in consequat duis ipsum et incididunt. Qui cupidatat ea deserunt magna proident nisi nulla eiusmod aliquip magna deserunt fugiat fugiat incididunt. Laboris nisi velit mollit ullamco deserunt eiusmod deserunt ea dolore veniam.",
+        "review_img_url": "https://images.pexels.com/photos/209728/pexels-photo-209728.jpeg?w=700&h=700",
+        "created_at": "2021-01-07T09:06:08.077Z",
+        "votes": 5,
+        "comment_count": 0
+      }
+    }
   },
   "GET /api/reviews/:review_id/comments": {
-    "description": "",
+    "description": "Serves all comments that belong to a review with the specified id",
     "queries": [],
-    "exampleResponse": {}
+    "exampleResponse": {
+      "comments": [
+        {
+          "comment_id": 5,
+          "body": "Now this is a story all about how, board games turned my life upside down",
+          "review_id": 2,
+          "author": "mallionaire",
+          "votes": 13,
+          "created_at": "2021-01-18T10:24:05.410Z"
+        },
+        {
+          "comment_id": 1,
+          "body": "I loved this game too!",
+          "review_id": 2,
+          "author": "bainesface",
+          "votes": 16,
+          "created_at": "2017-11-22T12:43:33.389Z"
+        },
+        {
+          "comment_id": 4,
+          "body": "EPIC board game!",
+          "review_id": 2,
+          "author": "bainesface",
+          "votes": 16,
+          "created_at": "2017-11-22T12:36:03.389Z"
+        }
+      ]
+    }
   },
   "POST /api/reviews/:review_id/comments": {
-    "description": "",
+    "description": "Creates a new comment for a review with the specified review_id and serves the newly created comment",
     "queries": [],
-    "exampleResponse": {}
+    "exampleResponse": {
+      "newComment": {
+        "comment_id": 7,
+        "body": "this game sucks",
+        "review_id": 1,
+        "author": "dav3rid",
+        "votes": 0,
+        "created_at": "2023-02-24T11:26:47.826Z"
+      }
+    }
   },
   "GET /api/users": {
-    "description": "",
+    "description": "Serves an array of all users",
     "queries": [],
-    "exampleResponse": {}
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "mallionaire",
+          "name": "haz",
+          "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+        },
+        {
+          "username": "philippaclaire9",
+          "name": "philippa",
+          "avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4"
+        },
+        {
+          "username": "bainesface",
+          "name": "sarah",
+          "avatar_url": "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4"
+        },
+        {
+          "username": "dav3rid",
+          "name": "dave",
+          "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
+        }
+      ]
+    }
   },
   "PATCH /api/reviews/:review_id": {
-    "description": "",
+    "description": "Updates review with the specified id and serves the updated review",
     "queries": [],
-    "exampleResponse": {}
+    "exampleResponse": {
+      "review": {
+        "review_id": 1,
+        "title": "Agricola",
+        "category": "euro game",
+        "designer": "Uwe Rosenberg",
+        "owner": "mallionaire",
+        "review_body": "Farmyard fun!",
+        "review_img_url": "https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700",
+        "created_at": "2021-01-18T10:00:20.514Z",
+        "votes": 2
+      }
+    }
   },
   "DELETE /api/comments/:comment_id": {
-    "description": "",
+    "description": "Deletes a comment with the specified id, serves no content",
     "queries": [],
     "exampleResponse": {}
   }

@@ -42,9 +42,7 @@ describe("GET /api/reviews", () => {
       .expect(200)
       .then((response) => {
         const { reviews } = response.body;
-
         expect(reviews.length).toBe(13);
-
         reviews.forEach((review) => {
           expect(review).toMatchObject({
             owner: expect.any(String),
