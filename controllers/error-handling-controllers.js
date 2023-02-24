@@ -8,7 +8,7 @@ exports.handleCustomErrors = (error, request, response, next) => {
   } else if (error === "incorrect data type") {
     response.status(400).send({ msg: "votes must be a number!" });
   } else if (error === "invalid category") {
-    response.status(400).send({ msg: "That is not a valid category" });
+    response.status(404).send({ msg: "That category does not exist" });
   } else if (error === "comment id does not exist") {
     response.status(404).send({ msg: "There is no comment with that ID" });
   } else if (error === "invalid sort by option") {

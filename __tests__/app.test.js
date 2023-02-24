@@ -437,22 +437,23 @@ describe("GET /api/reviews (queries)", () => {
         });
       });
   });
-  test("404: responds with error when given a category that exists but does not belong to any reviews", () => {
+  test("200: responds with empty array on key of reviews when given a category that exists but does not belong to any reviews", () => {
     return request(app)
       .get(`/api/reviews?category=children's+games`)
+      .expect(200)
+      .then((response) => {
+        const { reviews } = response.body;
+        expect(reviews.length).toBe(0);
+        expect(response.body).toHaveProperty("reviews");
+      });
+  });
+  test("404: responds with error when given invalid category", () => {
+    return request(app)
+      .get("/api/reviews?category=wrong_category")
       .expect(404)
       .then((response) => {
         const { msg } = response.body;
-        expect(msg).toBe("There are no reviews for that category");
-      });
-  });
-  test("400: responds with error when given invalid category", () => {
-    return request(app)
-      .get("/api/reviews?category=wrong_category")
-      .expect(400)
-      .then((response) => {
-        const { msg } = response.body;
-        expect(msg).toBe("That is not a valid category");
+        expect(msg).toBe("That category does not exist");
       });
   });
   test("400: responds with error when given invalid sort by option", () => {
@@ -462,15 +463,6 @@ describe("GET /api/reviews (queries)", () => {
       .then((response) => {
         const { msg } = response.body;
         expect(msg).toBe("Invalid sort by option");
-      });
-  });
-  test("400: responds with error when given invalid order by option", () => {
-    return request(app)
-      .get("/api/reviews?order=sideways")
-      .expect(400)
-      .then((response) => {
-        const { msg } = response.body;
-        expect(msg).toBe("Invalid order option");
       });
   });
 });

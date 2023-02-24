@@ -64,9 +64,6 @@ exports.selectReviews = (category, sort_by, order) => {
 
   return db.query(queryString, queryParams).then((result) => {
     const reviews = result.rows;
-    if (result.rowCount === 0) {
-      return Promise.reject("non-existent category");
-    }
     //converted comment count to number as it was being returned as a string
     reviews.map((review) => {
       return (review.comment_count = Number(review.comment_count));
