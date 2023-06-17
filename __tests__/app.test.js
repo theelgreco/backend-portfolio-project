@@ -26,7 +26,7 @@ describe("bad paths", () => {
         ];
         const { msg } = response.body;
         const left = msg.split("-->")[0];
-        const right = msg.split("-->")[1];
+        const right = msg.split("-->")[1].trim();
         const randomPath = paths.includes(right);
         expect(left).toBe("That's not a valid path, try this instead ");
         expect(randomPath).toBe(true);
