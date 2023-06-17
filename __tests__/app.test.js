@@ -8,13 +8,28 @@ beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
 describe("bad paths", () => {
-  test("404: responds with path not found", () => {
+  test("404: responds with random endpoint suggestion", () => {
     return request(app)
       .get("/badpath")
       .expect(404)
       .then((response) => {
+        const paths = [
+          "GET /api",
+          "GET /api/categories",
+          "GET /api/reviews",
+          "GET /api/reviews/:review_id",
+          "GET /api/reviews/:review_id/comments",
+          "POST /api/reviews/:review_id/comments",
+          "GET /api/users",
+          "PATCH /api/reviews/:review_id",
+          "DELETE /api/comments/:comment_id",
+        ];
         const { msg } = response.body;
-        expect(msg).toBe("path not found!");
+        const left = msg.split("-->")[0];
+        const right = msg.split("-->")[1];
+        const randomPath = paths.includes(right);
+        expect(left).toBe("That's not a valid path, try this instead ");
+        expect(randomPath).toBe(true);
       });
   });
 });

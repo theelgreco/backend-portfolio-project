@@ -135,3 +135,26 @@ exports.deleteComment = (request, response, next) => {
       next(error);
     });
 };
+
+exports.invalidPath = (request, response, next) => {
+  const paths = [
+    "GET /api",
+    "GET /api/categories",
+    "GET /api/reviews",
+    "GET /api/reviews/:review_id",
+    "GET /api/reviews/:review_id/comments",
+    "POST /api/reviews/:review_id/comments",
+    "GET /api/users",
+    "PATCH /api/reviews/:review_id",
+    "DELETE /api/comments/:comment_id",
+  ];
+
+  const randomIndex = Math.floor(Math.random() * paths.length);
+  const randomPath = paths[randomIndex];
+
+  response
+    .status(404)
+    .send({
+      msg: `That's not a valid path, try this instead --> ${randomPath}`,
+    });
+};
