@@ -1,4 +1,4 @@
-# <i><a href="https://nc-games-ki7a.onrender.com/">__VIEW THE APP:__ </br> __https://nc-games-ki7a.onrender.com/__</i></a>
+# <i><a href="https://nc-games-ki7a.onrender.com/">__API LINK:__ </br> __https://nc-games-ki7a.onrender.com/api__</i></a>
 <i>created by Stelios Kakoliris</i>
 </br>
 </br>
